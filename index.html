@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>ESP32-C3 Web Flasher</title>
+  <style>
+    /* Dark theme styles */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    #overlay form {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    #overlay input[type="password"] {
+      padding: 10px;
+      font-size: 1em;
+      width: 250px;
+      margin-bottom: 15px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      background: #2c2c2c;
+      color: #e0e0e0;
+    }
+    #overlay button {
+      padding: 10px 20px;
+      font-size: 1em;
+      background: #3a3a3a;
+      border: none;
+      border-radius: 4px;
+      color: #e0e0e0;
+      cursor: pointer;
+    }
+    #overlay button:hover {
+      background: #505050;
+    }
+    #overlay h2 {
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+    #overlay #error-msg {
+      color: #ff6b6b;
+      display: none;
+      margin-top: 10px;
+    }
+    #content {
+      display: none;
+      padding: 40px;
+      text-align: center;
+    }
+    #logo {
+      max-width: 200px;
+      margin-bottom: 20px;
+    }
+    #flash-button {
+      font-size: 1.2em;
+      padding: 12px 24px;
+      border-radius: 8px;
+      background: #2979ff;
+      border: none;
+      color: #ffffff;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    #flash-button:hover {
+      background: #5393ff;
+    }
+    #changelog {
+      margin-top: 40px;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    #changelog h2 {
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+    #changelog ul {
+      list-style: disc inside;
+      color: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+  <div id="overlay">
+    <form id="login-form">
+      <h2>Inserisci la password</h2>
+      <input type="password" id="pwd" placeholder="Password" required />
+      <br />
+      <button type="submit">Accedi</button>
+      <p id="error-msg">Password errata</p>
+    </form>
+  </div>
+
+  <div id="content">
+    <img id="logo" src="log.png" alt="Logo Progetto" />
+    <h1>Flash ESP32-C3</h1>
+    <button id="flash-button">Flash Firmware</button>
+
+    <div id="changelog">
+      <h2>Changelog</h2>
+      <ul>
+        <li><strong>v1.0.0</strong> - Versione iniziale con flasher web e autenticazione.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="module">
+    import { flash } from "https://unpkg.com/esp-web-flasher@latest";
+
+    const PASSWORD = "Maco2025";
+    const loginForm = document.getElementById('login-form');
+    const overlay = document.getElementById('overlay');
+    const content = document.getElementById('content');
+    const errorMsg = document.getElementById('error-msg');
+
+    loginForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const pwd = document.getElementById('pwd').value;
+      if (pwd === PASSWORD) {
+        overlay.style.display = 'none';
+        content.style.display = 'block';
+      } else {
+        errorMsg.style.display = 'block';
+      }
+    });
+
+    document.getElementById('flash-button').addEventListener('click', async () => {
+      await flash({ manifest: "manifest.json" });
+    });
+  </script>
+</body>
+</html>
