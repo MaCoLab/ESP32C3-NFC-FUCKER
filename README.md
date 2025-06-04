@@ -5,7 +5,7 @@ Questa repo contiene una pagina web per flashare automaticamente il tuo ESP32-C3
 
 ## Dispositivi supportati:
 
-- ** Esp32 C3
+- Esp32 C3
 
 
 ## Password
