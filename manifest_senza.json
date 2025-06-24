@@ -1,0 +1,14 @@
+{
+  "name": "NFCHackingTool ESP32-C3",
+  "builds": [
+    {
+      "chipFamily": "ESP32-C3",
+      "parts": [
+        {
+          "path": "V.1.2_senza_password.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}

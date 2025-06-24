@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ESP32 Web Flasher</title>
   <style>
+    /* Stili invariati */
     body {
       margin: 0;
       padding: 0;
@@ -90,8 +91,8 @@
     <div class="info-box">
       <h3>Seleziona il firmware:</h3>
       <select id="firmware-selector" class="firmware-selector">
-        <option value="V.1.2_senza_password.bin">Firmware senza password (v1.2)</option>
-        <option value="V1.2_con_password.bin">Firmware con password (v1.2)</option>
+        <option value="senza">Firmware senza password (v1.2)</option>
+        <option value="con">Firmware con password (v1.2)</option>
       </select>
       <p id="firmware-description">✅ Versione senza password di accesso all'avvio</p>
     </div>
@@ -105,7 +106,7 @@
     </div>
     
     <div style="display: flex; justify-content: center; margin-top: 20px;">
-      <esp-web-install-button id="install-button"></esp-web-install-button>
+      <esp-web-install-button id="install-button" manifest="manifest_senza.json"></esp-web-install-button>
     </div>
       
     <div class="changelog">
@@ -129,53 +130,39 @@
 
   <script>
     const PASSWORD = "Maco2025";
-    const manifest = {
-      name: "NFCHackingTool ESP32-C3",
-      builds: [
-        {
-          chipFamily: "ESP32-C3",
-          parts: [{ path: "V.1.2_senza_password.bin", offset: 0 }]
-        }
-      ]
-    };
-
-    const form = document.getElementById("password-form");
     const firmwareSelector = document.getElementById("firmware-selector");
     const installButton = document.getElementById("install-button");
     const description = document.getElementById("firmware-description");
     
     // Descrizioni per ogni firmware
     const firmwareDescriptions = {
-      "V.1.2_senza_password.bin": "✅ Versione senza password di accesso all'avvio",
-      "V1.2_con_password.bin": "✅ Versione con password di accesso all'avvio (richiedere al produttore)"
+      "senza": "✅ Versione senza password di accesso all'avvio",
+      "con": "✅ Versione con password di accesso all'avvio (richiedere al produttore)"
     };
     
-    form.addEventListener("submit", (e) => {
+    // Mappatura tra selezione e manifest
+    const manifestMap = {
+      "senza": "manifest_senza.json",
+      "con": "manifest_con.json"
+    };
+    
+    // Aggiorna al cambio selezione
+    firmwareSelector.addEventListener("change", () => {
+      const selected = firmwareSelector.value;
+      description.textContent = firmwareDescriptions[selected];
+      installButton.setAttribute("manifest", manifestMap[selected]);
+    });
+
+    // Gestione login
+    document.getElementById("password-form").addEventListener("submit", (e) => {
       e.preventDefault();
       const pw = document.getElementById("password").value;
       if (pw === PASSWORD) {
         document.getElementById("login").style.display = "none";
         document.getElementById("main").style.display = "block";
-        
-        // Inizializza il pulsante con il manifest predefinito
-        installButton.manifest = manifest;
       } else {
         alert("Password errata.");
       }
-    });
-
-    // Gestione cambio selezione firmware
-    firmwareSelector.addEventListener("change", () => {
-      const selectedFirmware = firmwareSelector.value;
-      
-      // Aggiorna il percorso nel manifest
-      manifest.builds[0].parts[0].path = selectedFirmware;
-      
-      // Aggiorna la descrizione
-      description.textContent = firmwareDescriptions[selectedFirmware];
-      
-      // Aggiorna il pulsante di installazione
-      installButton.manifest = manifest;
     });
   </script>
 </body>
