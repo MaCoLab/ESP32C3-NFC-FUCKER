@@ -5,11 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ESP32 Web Flasher</title>
   <style>
-<<<<<<< HEAD
-    /* Aggiungi questi nuovi stili */
-    .firmware-selector {
-      width: 100%;
-=======
     body {
       margin: 0;
       padding: 0;
@@ -32,20 +27,47 @@
     }
 
     input[type="password"], select {
->>>>>>> 18da651d51a925c8ce0d0a64e8b9421285805eba
       padding: 10px;
-      margin: 20px 0;
       border-radius: 6px;
+      border: none;
+      width: 100%;
+      margin-bottom: 10px;
       background-color: #1e1e1e;
       color: white;
       border: 1px solid #1e88e5;
     }
-    
-    .info-box {
+
+    button {
+      padding: 10px;
+      width: 100%;
+      border: none;
+      background-color: #1e88e5;
+      color: white;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .changelog, .info-box {
       background: #1e1e1e;
       padding: 15px;
-      margin: 15px 0;
+      margin-top: 20px;
       border-radius: 10px;
+    }
+
+    img.logo {
+      max-width: 200px;
+      margin-top: 30px;
+    }
+    
+    .firmware-selector {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      background-color: #1e1e1e;
+      color: white;
+      border: 1px solid #1e88e5;
     }
   </style>
   <script type="module" src="https://unpkg.com/esp-web-tools/dist/web/install-button.js?module"></script>
@@ -64,16 +86,14 @@
 
   <div id="main">
     <h2 style="text-align: center;">ESP32 C3 Firmware Web Flasher</h2>
-<<<<<<< HEAD
     
-    <!-- Aggiunto menu a tendina per selezione firmware -->
     <div class="info-box">
       <h3>Seleziona il firmware:</h3>
       <select id="firmware-selector" class="firmware-selector">
-        <option value="V.1.2_senza_password.bin">Stable 1.1 (Default)</option>
-        <option value="V1.2_con_password.bin">Stable 1.0</option>
+        <option value="V.1.2_senza_password.bin">Firmware senza password (v1.2)</option>
+        <option value="V1.2_con_password.bin">Firmware con password (v1.2)</option>
       </select>
-      <p id="firmware-description">✅ Versione Stabile 1.2 - Supporto completo</p>
+      <p id="firmware-description">✅ Versione senza password di accesso all'avvio</p>
     </div>
     
     <div class="info-box">
@@ -84,43 +104,14 @@
       <p>4. Premi "Install" per avviare il flash</p>
     </div>
     
-    <script type="module" src="https://unpkg.com/esp-web-tools/dist/web/install-button.js?module"></script>
     <div style="display: flex; justify-content: center; margin-top: 20px;">
-      <esp-web-install-button id="install-button" manifest="manifest.json"></esp-web-install-button>
-=======
-    <h3 style="text-align: center;">Collega il tuo dispositivo dalla porta dati, premi su "Connect", seleziona il tuo dispositivo e poi "install"</h3>
-
-    <label for="firmware-select" style="margin-top: 20px;">Seleziona versione firmware:</label>
-    <select id="firmware-select">
-      <option value="1">Firmware con password (v1.2.0)</option>
-      <option value="2">Firmware senza password (v1.2.0)</option>
-    </select>
-
-    <div style="display: flex; justify-content: center; margin-top: 30px;">
-   <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
->>>>>>> 18da651d51a925c8ce0d0a64e8b9421285805eba
+      <esp-web-install-button id="install-button"></esp-web-install-button>
     </div>
-
+      
     <div class="changelog">
-<<<<<<< HEAD
-      <!-- Changelog aggiornato -->
-      <h3 style="text-align: center;">Changelog</h3>
-      <p>✅ <strong>Nuovo in v1.2:</strong> Supporto multi-firmware</p>
-      <p>✅ Versione Stabile 1.1 - Quarta release<br>
-      📅 24 Giugno 2025</p>
-      <p>OLD:<br>
-      - Aggiunto supporto per ESP32-C3<br>
-      - Menu migliorato<br>
-      - Flash automatico da browser<br>
-<p> NEW:<br>
-    - Feedback (vibrazione + led rgb)<br>
-    - Password all'avvio del dispositivo (Chiederla al produttore) <br>
-    - Possibile ora selezionare il firmware da flashare (con o senza password di avvio)<br>
-
-=======
       <h3 style="text-align: center;">Changelog</h3>
       <p>
-        ✅ Versione Sabile 1.2 - Quarta release<br>
+        ✅ Versione Stabile 1.2 - Quarta release<br>
         📅 24 Giugno 2025<br>
         OLD:<br>
         - Aggiunto supporto per ESP32-C3<br>
@@ -133,7 +124,6 @@
         - Password all'avvio del dispositivo (Chiederla al produttore) <br>
         - Possibilità scelta firmware nel web flasher<br>
       </p>
->>>>>>> 18da651d51a925c8ce0d0a64e8b9421285805eba
     </div>
   </div>
 
@@ -149,48 +139,36 @@
       ]
     };
 
-    const firmwareList = {
-      1: {
-        name: "Firmware con password",
-        version: "v1.2.0",
-        path: "firmware/V1.2_con_password.bin"
-      },
-      2: {
-        name: "Firmware senza password",
-        version: "v1.2.0",
-        path: "firmware/V.1.2_senza_password.bin"
-      }
-    };
-
     const form = document.getElementById("password-form");
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const pw = document.getElementById("password").value;
-      if (pw === PASSWORD) {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("main").style.display = "block";
-        initFlasher();
-      } else {
-        alert("Password errata.");
-      }
-    });
-
-<<<<<<< HEAD
-    // Nuovo codice per gestire la selezione del firmware
     const firmwareSelector = document.getElementById("firmware-selector");
     const installButton = document.getElementById("install-button");
     const description = document.getElementById("firmware-description");
     
     // Descrizioni per ogni firmware
     const firmwareDescriptions = {
-      "V.1.2_senza_password.bin": "✅ Versione Stabile 1.2 - Senza Password di accesso",
-      "V1.2_con_password.bin": "✅ Versione Stabile 1.2 - Con Password di accesso",
+      "V.1.2_senza_password.bin": "✅ Versione senza password di accesso all'avvio",
+      "V1.2_con_password.bin": "✅ Versione con password di accesso all'avvio (richiedere al produttore)"
     };
     
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const pw = document.getElementById("password").value;
+      if (pw === PASSWORD) {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("main").style.display = "block";
+        
+        // Inizializza il pulsante con il manifest predefinito
+        installButton.manifest = manifest;
+      } else {
+        alert("Password errata.");
+      }
+    });
+
+    // Gestione cambio selezione firmware
     firmwareSelector.addEventListener("change", () => {
       const selectedFirmware = firmwareSelector.value;
       
-      // Aggiorna il manifest
+      // Aggiorna il percorso nel manifest
       manifest.builds[0].parts[0].path = selectedFirmware;
       
       // Aggiorna la descrizione
@@ -199,54 +177,6 @@
       // Aggiorna il pulsante di installazione
       installButton.manifest = manifest;
     });
-=======
-    function initFlasher() {
-      const select = document.getElementById("firmware-select");
-      const installBtn = document.getElementById("install-btn");
-
-      function generateManifest(fw) {
-        const manifest = {
-          name: fw.name,
-          version: fw.version,
-          builds: [{
-            chipFamily: "ESP32-C3",
-            parts: [{ path: fw.path, offset: 0 }]
-          }],
-          new_install_prompt_erase: true
-        };
-        return URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: "application/json" }));
-      }
-
-      const setManifest = () => {
-        const selected = firmwareList[select.value];
-        installBtn.manifest = generateManifest(selected);
-      };
-
-      setManifest();
-      select.addEventListener("change", setManifest);
-    }
->>>>>>> 18da651d51a925c8ce0d0a64e8b9421285805eba
   </script>
-<script>
-  const firmwareSelect = document.getElementById('firmware-select');
-  const installButton = document.getElementById('install-btn');
-
-  const manifests = {
-    con: 'manifest_con_password.json',
-    senza: 'manifest_senza_password.json'
-  };
-
-  function updateManifest() {
-    const value = firmwareSelect.value;
-    installButton.setAttribute('manifest', manifests[value]);
-  }
-
-  // Cambia manifest al cambio selezione
-  firmwareSelect.addEventListener('change', updateManifest);
-
-  // Imposta il manifest iniziale
-  updateManifest();
-</script>
-
 </body>
 </html>
