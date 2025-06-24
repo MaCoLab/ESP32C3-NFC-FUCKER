@@ -78,8 +78,8 @@
 
     <label for="firmware-select" style="margin-top: 20px;">Seleziona versione firmware:</label>
     <select id="firmware-select">
-      <option value="1">Firmware Base (v1.0.0)</option>
-      <option value="2">Firmware Ottimizzato (v1.1.0)</option>
+      <option value="1">Firmware con password (v1.2.0)</option>
+      <option value="2">Firmware senza password (v1.2.0)</option>
     </select>
 
     <div style="display: flex; justify-content: center; margin-top: 30px;">
@@ -109,14 +109,14 @@
 
     const firmwareList = {
       1: {
-        name: "Firmware Base",
+        name: "Firmware con password",
         version: "v1.0.0",
-        path: "firmware/firmware-v1.0.0.bin"
+        path: "firmware/V. 1.2 con password.bin"
       },
       2: {
-        name: "Firmware Ottimizzato",
+        name: "Firmware senza password",
         version: "v1.1.0",
-        path: "firmware/firmware-v1.1.0.bin"
+        path: "firmware/V. 1.2 senza password.bin"
       }
     };
 
