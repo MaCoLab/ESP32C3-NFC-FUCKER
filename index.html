@@ -6,57 +6,22 @@
   <title>ESP32 Web Flasher</title>
   <link rel="manifest" href="manifest.json" />
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: sans-serif;
-      background-color: #121212;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    #login, #main {
-      margin-top: 50px;
-      width: 90%;
-      max-width: 500px;
-    }
-
-    #main {
-      display: none;
-    }
-
-    input[type="password"] {
+    /* Aggiungi questi nuovi stili */
+    .firmware-selector {
+      width: 100%;
       padding: 10px;
+      margin: 20px 0;
       border-radius: 6px;
-      border: none;
-      width: 100%;
-      margin-bottom: 10px;
-    }
-
-    button {
-      padding: 10px;
-      width: 100%;
-      border: none;
-      background-color: #1e88e5;
+      background-color: #1e1e1e;
       color: white;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
+      border: 1px solid #1e88e5;
     }
-
-    .changelog {
+    
+    .info-box {
       background: #1e1e1e;
       padding: 15px;
-      margin-top: 20px;
+      margin: 15px 0;
       border-radius: 10px;
-      white-space: pre-wrap;
-    }
-
-    img.logo {
-      max-width: 200px;
-      margin-top: 30px;
     }
   </style>
 </head>
@@ -74,33 +39,59 @@
 
   <div id="main">
     <h2 style="text-align: center;">ESP32 C3 Firmware Web Flasher</h2>
-    <h3 style="text-align: center;">Collega il tuo dispositivo dalla porta dati, premi su "Connect", seleziona il tuo dispositivo e poi "install"</h3>
+    
+    <!-- Aggiunto menu a tendina per selezione firmware -->
+    <div class="info-box">
+      <h3>Seleziona il firmware:</h3>
+      <select id="firmware-selector" class="firmware-selector">
+        <option value="V.1.2_senza_password.bin">Stable 1.1 (Default)</option>
+        <option value="V1.2_con_password.bin">Stable 1.0</option>
+      </select>
+      <p id="firmware-description">✅ Versione Stabile 1.2 - Supporto completo</p>
+    </div>
+    
+    <div class="info-box">
+      <h3>Istruzioni:</h3>
+      <p>1. Collega il dispositivo dalla porta dati</p>
+      <p>2. Seleziona il firmware desiderato</p>
+      <p>3. Premi "Connect" e seleziona il dispositivo</p>
+      <p>4. Premi "Install" per avviare il flash</p>
+    </div>
     
     <script type="module" src="https://unpkg.com/esp-web-tools/dist/web/install-button.js?module"></script>
-    <div style="display: flex; justify-content: center; margin-top: 50px;">
-    <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
+    <div style="display: flex; justify-content: center; margin-top: 20px;">
+      <esp-web-install-button id="install-button" manifest="manifest.json"></esp-web-install-button>
     </div>
       
     <div class="changelog">
-  <h3 style="text-align: center;">Changelog</h3>
-  <p>
-    ✅ Versione Sabile 1.1 - Terza release<br>
-    📅 11 Giugno 2025<br>
-    OLD:<br>
-    - Aggiunto supporto per ESP32-C3<br>
-    - Menu migliorato<br>
-    - Flash automatico da browser<br>
-    - Traduzione in Italiano!<br>
-    - Importazione Vendor ID (srix4k)<br>
-    NEW:<br>
+      <!-- Changelog aggiornato -->
+      <h3 style="text-align: center;">Changelog</h3>
+      <p>✅ <strong>Nuovo in v1.2:</strong> Supporto multi-firmware</p>
+      <p>✅ Versione Stabile 1.1 - Quarta release<br>
+      📅 24 Giugno 2025</p>
+      <p>OLD:<br>
+      - Aggiunto supporto per ESP32-C3<br>
+      - Menu migliorato<br>
+      - Flash automatico da browser<br>
+<p> NEW:<br>
     - Feedback (vibrazione + led rgb)<br>
     - Password all'avvio del dispositivo (Chiederla al produttore) <br>
-  </p>
-</div>
+    - Possibile ora selezionare il firmware da flashare (con o senza password di avvio)<br>
+
+    </div>
   </div>
 
   <script>
     const PASSWORD = "Maco2025";
+    const manifest = {
+      name: "NFCHackingTool ESP32-C3",
+      builds: [
+        {
+          chipFamily: "ESP32-C3",
+          parts: [{ path: "V.1.2_senza_password.bin", offset: 0 }]
+        }
+      ]
+    };
 
     const form = document.getElementById("password-form");
     form.addEventListener("submit", (e) => {
@@ -112,6 +103,30 @@
       } else {
         alert("Password errata.");
       }
+    });
+
+    // Nuovo codice per gestire la selezione del firmware
+    const firmwareSelector = document.getElementById("firmware-selector");
+    const installButton = document.getElementById("install-button");
+    const description = document.getElementById("firmware-description");
+    
+    // Descrizioni per ogni firmware
+    const firmwareDescriptions = {
+      "V.1.2_senza_password.bin": "✅ Versione Stabile 1.2 - Senza Password di accesso",
+      "V1.2_con_password.bin": "✅ Versione Stabile 1.2 - Con Password di accesso",
+    };
+    
+    firmwareSelector.addEventListener("change", () => {
+      const selectedFirmware = firmwareSelector.value;
+      
+      // Aggiorna il manifest
+      manifest.builds[0].parts[0].path = selectedFirmware;
+      
+      // Aggiorna la descrizione
+      description.textContent = firmwareDescriptions[selectedFirmware];
+      
+      // Aggiorna il pulsante di installazione
+      installButton.manifest = manifest;
     });
   </script>
 </body>
