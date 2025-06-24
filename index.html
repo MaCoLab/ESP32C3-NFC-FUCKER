@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ESP32 Web Flasher</title>
-  <link rel="manifest" href="manifest.json" />
   <style>
     body {
       margin: 0;
@@ -27,7 +26,7 @@
       display: none;
     }
 
-    input[type="password"] {
+    input[type="password"], select {
       padding: 10px;
       border-radius: 6px;
       border: none;
@@ -59,6 +58,7 @@
       margin-top: 30px;
     }
   </style>
+  <script type="module" src="https://unpkg.com/esp-web-tools/dist/web/install-button.js?module"></script>
 </head>
 <body>
 
@@ -75,32 +75,50 @@
   <div id="main">
     <h2 style="text-align: center;">ESP32 C3 Firmware Web Flasher</h2>
     <h3 style="text-align: center;">Collega il tuo dispositivo dalla porta dati, premi su "Connect", seleziona il tuo dispositivo e poi "install"</h3>
-    
-    <script type="module" src="https://unpkg.com/esp-web-tools/dist/web/install-button.js?module"></script>
-    <div style="display: flex; justify-content: center; margin-top: 50px;">
-    <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
+
+    <label for="firmware-select" style="margin-top: 20px;">Seleziona versione firmware:</label>
+    <select id="firmware-select">
+      <option value="1">Firmware Base (v1.0.0)</option>
+      <option value="2">Firmware Ottimizzato (v1.1.0)</option>
+    </select>
+
+    <div style="display: flex; justify-content: center; margin-top: 30px;">
+      <esp-web-install-button id="install-btn"></esp-web-install-button>
     </div>
-      
+
     <div class="changelog">
-  <h3 style="text-align: center;">Changelog</h3>
-  <p>
-    ✅ Versione Sabile 1.1 - Terza release<br>
-    📅 11 Giugno 2025<br>
-    OLD:<br>
-    - Aggiunto supporto per ESP32-C3<br>
-    - Menu migliorato<br>
-    - Flash automatico da browser<br>
-    - Traduzione in Italiano!<br>
-    - Importazione Vendor ID (srix4k)<br>
-    NEW:<br>
-    - Feedback (vibrazione + led rgb)<br>
-    - Password all'avvio del dispositivo (Chiederla al produttore) <br>
-  </p>
-</div>
+      <h3 style="text-align: center;">Changelog</h3>
+      <p>
+        ✅ Versione Sabile 1.1 - Terza release<br>
+        📅 11 Giugno 2025<br>
+        OLD:<br>
+        - Aggiunto supporto per ESP32-C3<br>
+        - Menu migliorato<br>
+        - Flash automatico da browser<br>
+        - Traduzione in Italiano!<br>
+        - Importazione Vendor ID (srix4k)<br>
+        NEW:<br>
+        - Feedback (vibrazione + led rgb)<br>
+        - Password all'avvio del dispositivo (Chiederla al produttore) <br>
+      </p>
+    </div>
   </div>
 
   <script>
     const PASSWORD = "Maco2025";
+
+    const firmwareList = {
+      1: {
+        name: "Firmware Base",
+        version: "v1.0.0",
+        path: "firmware/firmware-v1.0.0.bin"
+      },
+      2: {
+        name: "Firmware Ottimizzato",
+        version: "v1.1.0",
+        path: "firmware/firmware-v1.1.0.bin"
+      }
+    };
 
     const form = document.getElementById("password-form");
     form.addEventListener("submit", (e) => {
@@ -109,10 +127,37 @@
       if (pw === PASSWORD) {
         document.getElementById("login").style.display = "none";
         document.getElementById("main").style.display = "block";
+        initFlasher();
       } else {
         alert("Password errata.");
       }
     });
+
+    function initFlasher() {
+      const select = document.getElementById("firmware-select");
+      const installBtn = document.getElementById("install-btn");
+
+      function generateManifest(fw) {
+        const manifest = {
+          name: fw.name,
+          version: fw.version,
+          builds: [{
+            chipFamily: "ESP32-C3",
+            parts: [{ path: fw.path, offset: 0 }]
+          }],
+          new_install_prompt_erase: true
+        };
+        return URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: "application/json" }));
+      }
+
+      const setManifest = () => {
+        const selected = firmwareList[select.value];
+        installBtn.manifest = generateManifest(selected);
+      };
+
+      setManifest();
+      select.addEventListener("change", setManifest);
+    }
   </script>
 </body>
 </html>
