@@ -83,7 +83,7 @@
     </select>
 
     <div style="display: flex; justify-content: center; margin-top: 30px;">
-      <esp-web-install-button id="install-btn"></esp-web-install-button>
+   <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
     </div>
 
     <div class="changelog">
@@ -160,5 +160,26 @@
       select.addEventListener("change", setManifest);
     }
   </script>
+<script>
+  const firmwareSelect = document.getElementById('firmware-select');
+  const installButton = document.getElementById('install-btn');
+
+  const manifests = {
+    con: 'manifest_con_password.json',
+    senza: 'manifest_senza_password.json'
+  };
+
+  function updateManifest() {
+    const value = firmwareSelect.value;
+    installButton.setAttribute('manifest', manifests[value]);
+  }
+
+  // Cambia manifest al cambio selezione
+  firmwareSelect.addEventListener('change', updateManifest);
+
+  // Imposta il manifest iniziale
+  updateManifest();
+</script>
+
 </body>
 </html>
