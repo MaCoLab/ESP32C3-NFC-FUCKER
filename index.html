@@ -3,9 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ESP32 Web Flasher</title>
+  <title>NFC FUCKER Web Flasher</title>
   <style>
     /* Stili invariati */
+img.logo-secondario {
+  max-width: 150px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  opacity: 0.95;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
     body {
       margin: 0;
       padding: 0;
@@ -86,18 +95,11 @@
   </div>
 
   <div id="main">
-    <h2 style="text-align: center;">ESP32 C3 Firmware Web Flasher</h2>
+  <img src="logo_small.png" alt="Logo secondario" class="logo-secondario" />
+    <h2 style="text-align: center;">Firmware Web Flasher</h2>
+      <h2 style="text-align: center;">(solo per ESP32 C3)</h2>
     
-    <div class="info-box">
-      <h3>Seleziona il firmware:</h3>
-      <select id="firmware-selector" class="firmware-selector">
-        <option value="senza">Firmware senza password (v1.3)</option>
-        <option value="con">Firmware con password (v1.3)</option>
-      </select>
-      <p id="firmware-description">✅ Versione senza password di accesso all'avvio</p>
-    </div>
-    
-    <div class="info-box">
+   <div class="info-box">
       <h3>Istruzioni:</h3>
       <p>1. Collega il dispositivo dalla porta dati</p>
       <p>2. Seleziona il firmware desiderato</p>
@@ -105,6 +107,17 @@
       <p>4. Premi "Install" per avviare il flash</p>
     </div>
     
+
+    <div class="info-box">
+      <h3>Seleziona il firmware:</h3>
+      <select id="firmware-selector" class="firmware-selector">
+        <option value="senza">Firmware senza password (v1.3.1)</option>
+        <option value="con">Firmware con password (v1.3.1)</option>
+      </select>
+      <p id="firmware-description">✅ Versione senza password di accesso all'avvio</p>
+    </div>
+    
+ 
     <div style="display: flex; justify-content: center; margin-top: 20px;">
       <esp-web-install-button id="install-button" manifest="manifest_senza.json"></esp-web-install-button>
     </div>
@@ -112,11 +125,15 @@
     <div class="changelog">
       <h3 style="text-align: center;">Changelog</h3>
       <p>
-<<<<<<< HEAD
+
 <div style="line-height: 1.8;">
   <div style="line-height: 1.8;">
-  <div style="text-align: center;"><strong>✅ Versione Stabile 1.3 - Quinta release</strong></div>
-  <div style="text-align: center;"><strong>📅 30 Giugno 2025</strong></div>
+  <div style="text-align: center;"><strong>✅ Versione Stabile 1.3.1 - Sesta release</strong></div>
+  <div style="text-align: center;"><strong>📅 11 Luglio 2025</strong></div>
+
+  <div style="margin-top: 20px; margin-bottom: 8px; text-align: center;"><strong>NEW:</strong></div>
+  <div style="margin-left: 12px;">- Correzione "reset" delle microel</div>
+  <div style="margin-left: 12px;">- Logo NFC Fucker aggiunto all'avvio </div>
 
   <div style="margin-top: 20px; margin-bottom: 8px; text-align: center;"><strong>OLD:</strong></div>
   <div style="margin-left: 12px;">- Aggiunto supporto per ESP32-C3</div>
@@ -124,32 +141,13 @@
   <div style="margin-left: 12px;">- Flash automatico da browser</div>
   <div style="margin-left: 12px;">- Traduzione in Italiano!</div>
   <div style="margin-left: 12px;">- Importazione Vendor ID (srix4k)</div>
-
-  <div style="margin-top: 20px; margin-bottom: 8px; text-align: center;"><strong>NEW:</strong></div>
   <div style="margin-left: 12px;">- Feedback (vibrazione + led rgb)</div>
   <div style="margin-left: 12px;">- Password all'avvio del dispositivo (Chiederla al produttore)</div>
   <div style="margin-left: 12px;">- Possibilità scelta firmware nel web flasher</div>
   <div style="margin-left: 12px;">- Aggiunto supporto TREA</div>
+  <div style="margin-left: 12px;">- Corretta ricarica Comestero (forzatura portafoglio settore 2)</div>
+
 </div>
-
-
-=======
-  <strong>✅ Versione Stabile 1.3 - Quinta release</strong><br>
-  <strong>📅 30 Giugno 2025</strong><br>
-         <strong>OLD:</strong><br>
-        - Aggiunto supporto per ESP32-C3<br>
-        - Menu migliorato<br>
-        - Flash automatico da browser<br>
-        - Traduzione in Italiano!<br>
-        - Importazione Vendor ID (srix4k)<br>
-        <strong> NEW:</strong><br>
-        - Feedback (vibrazione + led rgb)<br>
-        - Password all'avvio del dispositivo (Chiederla al produttore) <br>
-        - Possibilità scelta firmware nel web flasher<br>
-        - Aggiunto supporto TREA<br>
-        - Corretta ricarica Comestero (forzatura portafoglio settore 2)<br>
-      </p>
->>>>>>> 912e9504f2cdcf1fbc23ab8d6392beb11f29a714
     </div>
   </div>
 
