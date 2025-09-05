@@ -14,7 +14,7 @@ Questa repo contiene una pagina web per flashare automaticamente il tuo ESP32-C3
 
 ## Configurazione:
 
-In questa repo non troverete il progetto completo con tutti i moduli che vengono impiegati, ma solo ed esclusivamente il firmware in formato binario. 
+In questa repo non troverete il progetto completo con i pinout da utilizzare o  i moduli impiegati, ma solo ed esclusivamente il firmware in formato binario. 
 
 ## Attenzione, la pagina è protetta da password
 
