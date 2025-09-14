@@ -1,196 +1,649 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NFC Card Manager</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 20px;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 15px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
-    .header {
-      background: linear-gradient(135deg, #2c3e50, #3498db);
-      color: white;
-      padding: 30px;
-      text-align: center;
-    }
-    .header h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    }
-    .header p { font-size: 1.1em; opacity: 0.9; }
-    .main-content { padding: 30px; }
-    .connection-status {
-      background: #f8f9fa;
-      border: 2px solid #dee2e6;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 30px;
-      text-align: center;
-    }
-    .connection-status.connected {
-      background: #d4edda; border-color: #c3e6cb; color: #155724;
-    }
-    .connection-status.disconnected {
-      background: #f8d7da; border-color: #f5c6cb; color: #721c24;
-    }
-    .btn {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white; border: none; padding: 12px 25px;
-      border-radius: 8px; cursor: pointer;
-      font-size: 16px; transition: all 0.3s ease;
-      margin: 10px 5px;
-    }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-    .btn-success { background: linear-gradient(135deg, #28a745, #20c997); }
-    .btn-danger { background: linear-gradient(135deg, #dc3545, #fd7e14); }
-    .tabs { display: flex; background: #f8f9fa; border-radius: 10px; margin-bottom: 30px; overflow: hidden; }
-    .tab { flex: 1; padding: 15px; background: #6c757d; color: white; border: none; cursor: pointer; transition: background 0.3s ease; font-size: 16px; }
-    .tab.active { background: linear-gradient(135deg, #667eea, #764ba2); }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .card-section {
-      background: #f8f9fa; border-radius: 10px; padding: 25px; margin-bottom: 25px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    }
-    .card-section h3 {
-      color: #2c3e50; margin-bottom: 20px; font-size: 1.4em;
-      border-bottom: 2px solid #667eea; padding-bottom: 10px;
-    }
-    .card-item {
-      background: white; border: 1px solid #dee2e6;
-      border-radius: 8px; padding: 15px; margin-bottom: 10px;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .card-info { font-family: 'Courier New', monospace; font-size: 14px; }
-    .form-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
-    .form-group { flex: 1; min-width: 200px; }
-    .form-group label { display: block; margin-bottom: 5px; color: #495057; font-weight: bold; }
-    .form-group input {
-      width: 100%; padding: 12px; border: 2px solid #dee2e6; border-radius: 6px;
-      font-size: 14px; font-family: 'Courier New', monospace;
-    }
-    .form-group input:focus {
-      outline: none; border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
-    }
-    .log-area {
-      background: #1e1e1e; color: #00ff00; font-family: 'Courier New', monospace;
-      padding: 20px; border-radius: 10px; height: 300px; overflow-y: auto;
-      margin-top: 20px; border: 2px solid #333;
-    }
-    .actions { margin-top: 30px; text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px; }
-    .help-text { color: #6c757d; font-size: 14px; margin-top: 10px; font-style: italic; }
-    @media (max-width: 768px) {
-      .form-row { flex-direction: column; }
-      .tabs { flex-direction: column; }
-      .card-item { flex-direction: column; align-items: flex-start; }
-      .header h1 { font-size: 1.8em; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC Card Manager - ESP32C3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .connection-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .status.disconnected {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .status.connected {
+            background: #51cf66;
+            color: white;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn.danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .btn.success {
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+        }
+
+        .cards-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .card-type {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .card-type h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .card-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .card-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .card-item h4 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.2em;
+        }
+
+        .card-item p {
+            color: #666;
+            margin: 5px 0;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .card-item .remove-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .card-item .remove-btn:hover {
+            background: #ee5a24;
+            transform: scale(1.05);
+        }
+
+        .add-form {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .logs {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 10px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+
+        .logs-header {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .loading {
+            animation: pulse 1s infinite;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>🔧 NFC Card Manager</h1>
-      <p>Gestione dinamica di carte Comestero e Trea</p>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 NFC Card Manager</h1>
+            <p>Gestisci le tue card Comestero e Trea via WebSerial</p>
+        </div>
+
+        <div class="main-content">
+            <div class="connection-section">
+                <div id="status" class="status disconnected">❌ Disconnesso</div>
+                <br>
+                <button id="connectBtn" class="btn">🔌 Connetti ESP32C3</button>
+                <button id="disconnectBtn" class="btn danger hidden">🔌 Disconnetti</button>
+                <button id="refreshBtn" class="btn success hidden">🔄 Aggiorna Lista</button>
+                <button id="clearAllBtn" class="btn danger hidden">🗑️ Cancella Tutto</button>
+            </div>
+
+            <div class="warning">
+                ⚠️ <strong>Attenzione:</strong> Assicurati che il tuo ESP32C3 sia connesso via USB e che il firmware sia aggiornato con il CardManager. Questo sito funziona solo su browser che supportano WebSerial (Chrome, Edge).
+            </div>
+
+            <div id="cardsSection" class="cards-section hidden">
+                <!-- Sezione Comestero -->
+                <div class="card-type">
+                    <h3>🏪 Card Comestero</h3>
+                    <div id="comesteroList" class="card-list">
+                        <!-- Le card verranno aggiunte dinamicamente -->
+                    </div>
+                    
+                    <div class="add-form">
+                        <h4>➕ Aggiungi Card Comestero</h4>
+                        <div class="form-group">
+                            <label>Nome Card:</label>
+                            <input type="text" id="comesteroName" placeholder="es. Mario Rossi">
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>UID (hex):</label>
+                                <input type="text" id="comesteroUID" placeholder="F348S83EC" maxlength="8">
+                            </div>
+                            <div class="form-group">
+                                <label>Key 0B (hex):</label>
+                                <input type="text" id="comesteroKey0" placeholder="4AF6F3C140CD" maxlength="12">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Key UID/2B (hex):</label>
+                            <input type="text" id="comesteroKeyUID" placeholder="48C4ECD2337D" maxlength="12">
+                        </div>
+                        <button class="btn success" onclick="addComesteroCard()">➕ Aggiungi Card</button>
+                    </div>
+                </div>
+
+                <!-- Sezione Trea -->
+                <div class="card-type">
+                    <h3>🎫 Card Trea</h3>
+                    <div id="treaList" class="card-list">
+                        <!-- Le card verranno aggiunte dinamicamente -->
+                    </div>
+                    
+                    <div class="add-form">
+                        <h4>➕ Aggiungi Card Trea</h4>
+                        <div class="form-group">
+                            <label>Nome Card:</label>
+                            <input type="text" id="treaName" placeholder="es. Anna Bianchi">
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>UID (hex):</label>
+                                <input type="text" id="treaUID" placeholder="D7A2DD6E" maxlength="8">
+                            </div>
+                            <div class="form-group">
+                                <label>Key Settore 6 (hex):</label>
+                                <input type="text" id="treaKey6" placeholder="26F330C35759" maxlength="12">
+                            </div>
+                        </div>
+                        <button class="btn success" onclick="addTreaCard()">➕ Aggiungi Card</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="logs-header">📋 Log Comunicazione</div>
+            <div id="logs" class="logs"></div>
+        </div>
     </div>
-    <div class="main-content">
-      <!-- Connection Status -->
-      <div id="connection-status" class="connection-status disconnected">
-        <h3>⚠️ Dispositivo non connesso</h3>
-        <p>Collega il dispositivo via USB e clicca "Connetti"</p>
-        <button id="connect-btn" class="btn">Connetti Dispositivo</button>
-      </div>
 
-      <!-- Tabs -->
-      <div class="tabs">
-        <button class="tab active" onclick="switchTab('comestero')">Carte Comestero</button>
-        <button class="tab" onclick="switchTab('trea')">Carte Trea</button>
-        <button class="tab" onclick="switchTab('import-export')">Import/Export</button>
-      </div>
+    <script>
+        let port = null;
+        let reader = null;
+        let writer = null;
 
-      <!-- Qui vanno le sezioni carte, import/export ecc... (uguali alla tua versione precedente) -->
-      <div class="log-area" id="log-area">
-        <div>NFC Card Manager v1.0 - Ready</div>
-        <div>Collega il dispositivo per iniziare...</div>
-      </div>
-    </div>
-  </div>
+        const status = document.getElementById('status');
+        const connectBtn = document.getElementById('connectBtn');
+        const disconnectBtn = document.getElementById('disconnectBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const cardsSection = document.getElementById('cardsSection');
+        const logs = document.getElementById('logs');
 
-  <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    let serialPort = null;
-    let isConnected = false;
-
-    async function connectDevice() {
-      try {
-        if ('serial' in navigator) {
-          serialPort = await navigator.serial.requestPort();
-          await serialPort.open({ baudRate: 115200 });
-          isConnected = true;
-          updateConnectionStatus();
-          logMessage("Dispositivo connesso con successo!");
-        } else {
-          logMessage("Web Serial API non supportata dal browser");
+        // Verifica supporto WebSerial
+        if (!('serial' in navigator)) {
+            alert('WebSerial non è supportato in questo browser. Usa Chrome o Edge.');
         }
-      } catch (err) {
-        logMessage("Errore connessione: " + err.message);
-      }
-    }
 
-    function updateConnectionStatus() {
-      const statusEl = document.getElementById('connection-status');
-      const connectBtn = document.getElementById('connect-btn');
-      if (isConnected) {
-        statusEl.className = 'connection-status connected';
-        statusEl.innerHTML = '<h3>✅ Dispositivo connesso</h3><p>Pronto per sincronizzazione</p>';
-        connectBtn.textContent = 'Disconnetti';
-        connectBtn.onclick = disconnectDevice;
-      } else {
-        statusEl.className = 'connection-status disconnected';
-        statusEl.innerHTML = '<h3>⚠️ Dispositivo non connesso</h3><p>Collega il dispositivo via USB</p>';
-        connectBtn.textContent = 'Connetti Dispositivo';
-        connectBtn.onclick = connectDevice;
-      }
-    }
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#51cf66' : '#00ff00';
+            logs.innerHTML += `<span style="color: ${color}">[${timestamp}] ${message}</span>\n`;
+            logs.scrollTop = logs.scrollHeight;
+        }
 
-    function disconnectDevice() {
-      if (serialPort) {
-        serialPort.close();
-        serialPort = null;
-      }
-      isConnected = false;
-      updateConnectionStatus();
-      logMessage("Dispositivo disconnesso");
-    }
+        async function connectSerial() {
+            try {
+                connectBtn.classList.add('loading');
+                connectBtn.textContent = '🔄 Connessione...';
+                
+                port = await navigator.serial.requestPort();
+                await port.open({ baudRate: 115200 });
 
-    function logMessage(msg) {
-      const logArea = document.getElementById('log-area');
-      const time = new Date().toLocaleTimeString();
-      logArea.innerHTML += `<div>[${time}] ${msg}</div>`;
-      logArea.scrollTop = logArea.scrollHeight;
-    }
+                reader = port.readable.getReader();
+                writer = port.writable.getWriter();
 
-    // init
-    updateConnectionStatus();
-    document.getElementById('connect-btn').addEventListener('click', connectDevice);
-    logMessage("Interface caricata - Pronta all'uso");
-  });
-  </script>
+                status.textContent = '✅ Connesso';
+                status.className = 'status connected';
+                connectBtn.classList.add('hidden');
+                disconnectBtn.classList.remove('hidden');
+                refreshBtn.classList.remove('hidden');
+                clearAllBtn.classList.remove('hidden');
+                cardsSection.classList.remove('hidden');
+
+                log('Connessione ESP32C3 stabilita!', 'success');
+                
+                // Avvia lettura continua
+                readSerialData();
+                
+                // Carica automaticamente le card
+                await loadAllCards();
+                
+            } catch (error) {
+                log(`Errore connessione: ${error.message}`, 'error');
+                connectBtn.classList.remove('loading');
+                connectBtn.textContent = '🔌 Connetti ESP32C3';
+            }
+        }
+
+        async function disconnectSerial() {
+            try {
+                if (reader) {
+                    await reader.cancel();
+                    reader.releaseLock();
+                    reader = null;
+                }
+                if (writer) {
+                    writer.releaseLock();
+                    writer = null;
+                }
+                if (port) {
+                    await port.close();
+                    port = null;
+                }
+
+                status.textContent = '❌ Disconnesso';
+                status.className = 'status disconnected';
+                connectBtn.classList.remove('hidden');
+                disconnectBtn.classList.add('hidden');
+                refreshBtn.classList.add('hidden');
+                clearAllBtn.classList.add('hidden');
+                cardsSection.classList.add('hidden');
+                
+                connectBtn.classList.remove('loading');
+                connectBtn.textContent = '🔌 Connetti ESP32C3';
+
+                log('Disconnesso da ESP32C3', 'info');
+                
+            } catch (error) {
+                log(`Errore disconnessione: ${error.message}`, 'error');
+            }
+        }
+
+        async function readSerialData() {
+            try {
+                while (port && port.readable) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+
+                    const text = new TextDecoder().decode(value);
+                    const lines = text.split('\n');
+                    
+                    for (let line of lines) {
+                        line = line.trim();
+                        if (line) {
+                            log(`RX: ${line}`);
+                            handleSerialResponse(line);
+                        }
+                    }
+                }
+            } catch (error) {
+                if (error.name !== 'NetworkError') {
+                    log(`Errore lettura: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        async function sendCommand(command) {
+            if (!writer) return false;
+            try {
+                const data = new TextEncoder().encode(command + '\n');
+                await writer.write(data);
+                log(`TX: ${command}`);
+                return true;
+            } catch (error) {
+                log(`Errore invio: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        let currentCards = { comestero: [], trea: [] };
+        let isLoadingCards = false;
+
+        function handleSerialResponse(line) {
+            if (line === 'CARDS_START') {
+                isLoadingCards = true;
+                currentCards = { comestero: [], trea: [] };
+            } else if (line === 'CARDS_END') {
+                isLoadingCards = false;
+                updateCardDisplay();
+            } else if (isLoadingCards && line.startsWith('{')) {
+                try {
+                    const card = JSON.parse(line);
+                    if (card.type === 'comestero') {
+                        currentCards.comestero.push(card);
+                    } else if (card.type === 'trea') {
+                        currentCards.trea.push(card);
+                    }
+                } catch (e) {
+                    log(`Errore parsing JSON: ${e.message}`, 'error');
+                }
+            }
+        }
+
+        function updateCardDisplay() {
+            // Aggiorna lista Comestero
+            const comesteroList = document.getElementById('comesteroList');
+            comesteroList.innerHTML = '';
+            currentCards.comestero.forEach(card => {
+                const cardElement = createCardElement(card, 'comestero');
+                comesteroList.appendChild(cardElement);
+            });
+
+            // Aggiorna lista Trea
+            const treaList = document.getElementById('treaList');
+            treaList.innerHTML = '';
+            currentCards.trea.forEach(card => {
+                const cardElement = createCardElement(card, 'trea');
+                treaList.appendChild(cardElement);
+            });
+
+            log(`Caricate ${currentCards.comestero.length} card Comestero e ${currentCards.trea.length} card Trea`, 'success');
+        }
+
+        function createCardElement(card, type) {
+            const div = document.createElement('div');
+            div.className = 'card-item';
+            
+            let keysHtml = '';
+            if (type === 'comestero') {
+                keysHtml = `
+                    <p><strong>Key 0B:</strong> ${card.key0}</p>
+                    <p><strong>Key UID:</strong> ${card.keyuid}</p>
+                `;
+            } else {
+                keysHtml = `<p><strong>Key Settore 6:</strong> ${card.key6}</p>`;
+            }
+            
+            div.innerHTML = `
+                <h4>${card.name}</h4>
+                <p><strong>UID:</strong> ${card.uid}</p>
+                ${keysHtml}
+                <button class="remove-btn" onclick="removeCard('${type}', '${card.uid}')">🗑️ Rimuovi</button>
+            `;
+            
+            return div;
+        }
+
+        async function loadAllCards() {
+            await sendCommand('LIST_ALL');
+        }
+
+        async function addComesteroCard() {
+            const name = document.getElementById('comesteroName').value.trim();
+            const uid = document.getElementById('comesteroUID').value.trim().toUpperCase();
+            const key0 = document.getElementById('comesteroKey0').value.trim().toUpperCase();
+            const keyUID = document.getElementById('comesteroKeyUID').value.trim().toUpperCase();
+
+            if (!name || !uid || !key0 || !keyUID) {
+                alert('Compila tutti i campi!');
+                return;
+            }
+
+            if (uid.length !== 8 || key0.length !== 12 || keyUID.length !== 12) {
+                alert('Lunghezza non valida! UID: 8 caratteri, Keys: 12 caratteri');
+                return;
+            }
+
+            const command = `ADD_COMESTERO:${uid},${key0},${keyUID},${name}`;
+            await sendCommand(command);
+            
+            // Pulisci i campi
+            document.getElementById('comesteroName').value = '';
+            document.getElementById('comesteroUID').value = '';
+            document.getElementById('comesteroKey0').value = '';
+            document.getElementById('comesteroKeyUID').value = '';
+            
+            // Ricarica la lista dopo un breve delay
+            setTimeout(() => loadAllCards(), 500);
+        }
+
+        async function addTreaCard() {
+            const name = document.getElementById('treaName').value.trim();
+            const uid = document.getElementById('treaUID').value.trim().toUpperCase();
+            const key6 = document.getElementById('treaKey6').value.trim().toUpperCase();
+
+            if (!name || !uid || !key6) {
+                alert('Compila tutti i campi!');
+                return;
+            }
+
+            if (uid.length !== 8 || key6.length !== 12) {
+                alert('Lunghezza non valida! UID: 8 caratteri, Key: 12 caratteri');
+                return;
+            }
+
+            const command = `ADD_TREA:${uid},${key6},${name}`;
+            await sendCommand(command);
+            
+            // Pulisci i campi
+            document.getElementById('treaName').value = '';
+            document.getElementById('treaUID').value = '';
+            document.getElementById('treaKey6').value = '';
+            
+            // Ricarica la lista dopo un breve delay
+            setTimeout(() => loadAllCards(), 500);
+        }
+
+        async function removeCard(type, uid) {
+            if (!confirm(`Sei sicuro di voler rimuovere questa card ${type}?`)) {
+                return;
+            }
+
+            const command = type === 'comestero' ? `REMOVE_COMESTERO:${uid}` : `REMOVE_TREA:${uid}`;
+            await sendCommand(command);
+            
+            // Ricarica la lista dopo un breve delay
+            setTimeout(() => loadAllCards(), 500);
+        }
+
+        async function clearAllCards() {
+            if (!confirm('⚠️ ATTENZIONE: Questa operazione cancellerà TUTTE le card salvate!\n\nSei sicuro di voler continuare?')) {
+                return;
+            }
+            
+            if (!confirm('🚨 ULTIMA CONFERMA: Tutte le card verranno eliminate definitivamente!')) {
+                return;
+            }
+
+            await sendCommand('CLEAR_ALL');
+            setTimeout(() => loadAllCards(), 500);
+        }
+
+        // Event listeners
+        connectBtn.addEventListener('click', connectSerial);
+        disconnectBtn.addEventListener('click', disconnectSerial);
+        refreshBtn.addEventListener('click', loadAllCards);
+        clearAllBtn.addEventListener('click', clearAllCards);
+
+        // Auto-formattazione input hex
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            if (input.id.includes('UID') || input.id.includes('Key') || input.id.includes('key')) {
+                input.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.toUpperCase().replace(/[^0-9A-F]/g, '');
+                });
+            }
+        });
+    </script>
 </body>
 </html>
-
