@@ -1,20 +1,21 @@
-name: Test Telegram Bot
+name: Notify Telegram on Release
 
 on:
-  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
-  test:
+  notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Send test message
+      - name: Send message to Telegram with button
         run: |
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
           -H "Content-Type: application/json" \
           -d "{
             \"chat_id\": \"-1003071555867\",
             \"parse_mode\": \"Markdown\",
-            \"text\": \"🔥 Test messaggio dal bot 🔥\",
+            \"text\": \"🔥 *Aggiornamento Disponibile!* 🔥\n-Nuova Release per *NFC Fucker*-\n*Versione:* ${{ github.event.release.name }}\nControlla il Changelog per le novità!\",
             \"reply_markup\": {
               \"inline_keyboard\": [[
                 {\"text\": \"🔗 Vai al sito\", \"url\": \"https://macolab.github.io/ESP32C3-NFC-FUCKER/\"}
