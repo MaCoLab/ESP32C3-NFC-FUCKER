@@ -2,7 +2,7 @@ name: Notify Telegram on Release
 
 on:
   release:
-    types: [published]
+    types: [created, published]
 
 jobs:
   notify:
