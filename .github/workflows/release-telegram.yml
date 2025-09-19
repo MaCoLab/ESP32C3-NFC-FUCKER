@@ -2,7 +2,7 @@ name: Notify Telegram on Release
 
 on:
   release:
-    types: [published]  # si attiva solo quando pubblichi la release
+    types: [created, published]
   workflow_dispatch:    # trigger manuale per test
 
 jobs:
