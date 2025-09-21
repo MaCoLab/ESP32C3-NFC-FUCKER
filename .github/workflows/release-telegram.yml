@@ -14,7 +14,7 @@ jobs:
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
           -H "Content-Type: application/json" \
           -d "{
-            \"chat_id\": \"-1003071555867\",
+            \"chat_id\": \"(quichatid)\",
             \"parse_mode\": \"Markdown\",
             \"text\": \"🔥 *Aggiornamento Disponibile!* 🔥\n-Nuova Release per *NFC Fucker*-\n*Versione:* ${{ github.event.release.name }}\nControlla il Changelog per le novità!\",
             \"reply_markup\": {
